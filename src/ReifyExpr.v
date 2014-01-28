@@ -383,6 +383,7 @@ Ltac get_or_extend_var types all t v k :=
  **  currently, vars and isConst are not used
  **)
 Ltac reify_expr isConst e types funcs uvars vars k :=
+  idtac "reify_e";
   let rec reflect e funcs uvars k :=
     match e with
       | ?X => is_evar X ;
