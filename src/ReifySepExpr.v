@@ -291,7 +291,15 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
             let r := constr:(@Func types F args) in
             k uvars funcs sfuncs r))
           in
-          refl_app cc X
+          match s with
+          | _ =>
+            match isConst s with
+              | true =>
+                let r := constr:(@Const types s) in
+                k uvars funcs sfuncs r
+              | false => refl_app cc X
+            end
+          end
       end
     in
     reflect s funcs sfuncs uvars vars k.

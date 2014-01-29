@@ -311,9 +311,9 @@ Ltac getFunction types f funcs' args k :=
   let rec lookup funcs acc :=
     match funcs with
       | nil =>
-        let F := reify_function types args f in
+        (let F := reify_function types args f in
         let funcs := eval simpl app in (funcs' ++ (F :: nil)) in
-        k funcs acc
+        k funcs acc) || fail 10000 "Bad continuation to getFunction"
       | ?F :: _ =>
         guard_unifies f (Denotation F) ;
         k funcs' acc
