@@ -321,9 +321,10 @@ Ltac getFunction types f funcs' args k :=
         let acc := constr:(S acc) in
         lookup FS acc
       | _ => 
-        idtac "had to hnf in funcs" funcs ;
-        let funcs := eval hnf in funcs in
-        lookup funcs acc
+        (*idtac "had to hnf in funcs" funcs ;*)
+        let funcs' := eval hnf in funcs in
+        let funcs'' := eval simpl in funcs' in
+        lookup funcs'' acc
     end
   in
   lookup funcs' 0.
