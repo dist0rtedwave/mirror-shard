@@ -8,14 +8,14 @@ Set Strict Implicit.
 
 (** Provers that establish [expr]-encoded facts *)
 
-Definition ProverCorrect types (fs : functions types) (summary : Type)
+Definition ProverCorrect' types (fs : functions types) (summary : Type)
     (** Some prover work only needs to be done once per set of hypotheses,
        so we do it once and save the outcome in a summary of this type. *)
   (valid : env types -> env types -> summary -> Prop)
   (prover : summary -> expr -> bool) : Prop :=
   forall vars uvars sum,
     valid uvars vars sum ->
-    forall goal, 
+    forall goal,
       prover sum goal = true ->
       ValidProp fs uvars vars goal ->
       Provable fs uvars vars goal.
@@ -142,7 +142,6 @@ Section composite.
   Variable pr_correct : ProverT_correct pr funcs.
 
   Theorem composite_ProverT_correct : ProverT_correct composite_ProverT funcs.
-    
     refine (
       {| Valid := fun uvars vars (facts : Facts composite_ProverT) =>
         let (fl,fr) := facts in

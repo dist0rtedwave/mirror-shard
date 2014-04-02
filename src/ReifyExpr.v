@@ -311,9 +311,9 @@ Ltac getFunction types f funcs' args k :=
   let rec lookup funcs acc :=
     match funcs with
       | nil =>
-        let F := reify_function types args f in
+        (let F := reify_function types args f in
         let funcs := eval simpl app in (funcs' ++ (F :: nil)) in
-        k funcs acc
+        k funcs acc) || fail 10000 "Bad continuation to getFunction"
       | ?F :: _ =>
         guard_unifies f (Denotation F) ;
         k funcs' acc
@@ -321,9 +321,10 @@ Ltac getFunction types f funcs' args k :=
         let acc := constr:(S acc) in
         lookup FS acc
       | _ => 
-        idtac "had to hnf in funcs" funcs ;
-        let funcs := eval hnf in funcs in
-        lookup funcs acc
+        (*idtac "had to hnf in funcs" funcs ;*)
+        let funcs' := eval hnf in funcs in
+        let funcs'' := eval simpl in funcs' in
+        lookup funcs'' acc
     end
   in
   lookup funcs' 0.
@@ -383,6 +384,7 @@ Ltac get_or_extend_var types all t v k :=
  **  currently, vars and isConst are not used
  **)
 Ltac reify_expr isConst e types funcs uvars vars k :=
+  idtac "reify_e";
   let rec reflect e funcs uvars k :=
     match e with
       | ?X => is_evar X ;

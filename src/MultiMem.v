@@ -1,4 +1,5 @@
 Require Import List.
+Require Import ExtLib.Tactics.Consider.
 Require Import Heaps.
 
 Set Implicit Arguments.

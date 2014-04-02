@@ -27,7 +27,8 @@ TESTS := UnfolderTests
 VS         := $(GENERIC:%=%.v) $(MODULES:%=%.v)
 TVS        := $(TESTS:%=%.v)
 
-ARGS :=-R ../coq-ext-lib/theories ExtLib -R . MirrorShard
+ARGS :=-R ../coq-ext-lib/theories ExtLib \
+       -R . MirrorShard
 
 .PHONY: coq clean package
 

@@ -151,6 +151,7 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
    **  predicate.
    **)
   Ltac getSFunction pcT stT types f sfuncs k :=
+    idtac "getSFunction";
     let rec lookup sfuncs' acc :=
       match sfuncs' with
         | nil =>
@@ -181,6 +182,10 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
                 | _ => fail 100000 "something bad happened!"
               end                  
           end
+        | _ => 
+        idtac "had to hnf in funcs" sfuncs' ;
+        let funcs := eval hnf in sfuncs' in
+        lookup funcs acc
       end
     in lookup sfuncs 0.
 
@@ -199,6 +204,7 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
    ** sexpr.
    **)
   Ltac reify_sexpr isConst s types funcs pcType stateType sfuncs uvars vars k :=
+    idtac "reify";
     let rec reflect s funcs sfuncs uvars vars k :=
       let v := ST.ex in
       match s with
@@ -285,7 +291,15 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
             let r := constr:(@Func F args) in
             k uvars funcs sfuncs r))
           in
-          refl_app cc X
+          match s with
+          | _ =>
+            match isConst s with
+              | true =>
+                let r := constr:(@Const types s) in
+                k uvars funcs sfuncs r
+              | false => refl_app cc X
+            end
+          end
       end
     in
     reflect s funcs sfuncs uvars vars k.
