@@ -20,6 +20,14 @@ Definition ProverCorrect' types (fs : functions types) (summary : Type)
       ValidProp fs uvars vars goal ->
       Provable fs uvars vars goal.
 
+Definition ProverCorrect := ProverCorrect'.
+
+Theorem ProverCorrect_ProverCorrect' : forall t f s v p,
+   @ProverCorrect' t f s v p <-> @ProverCorrect t f s v p.
+Proof.
+intuition.
+Qed.
+
 Record ProverT : Type :=
 { Facts : Type
 ; Summarize : exprs -> Facts
