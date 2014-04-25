@@ -155,9 +155,11 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
     let rec lookup sfuncs' acc :=
       match sfuncs' with
         | nil =>
-          (let F := reify_sfunction pcT stT types f in
+          (*idtac "trying to reify SFunction " f;*)
+          first [(let F := reify_sfunction pcT stT types f in
+           (*idtac "going to try to reify " f " as " F;*)
            let sfuncs := eval simpl app in (sfuncs ++ (F :: nil)) in
-           k sfuncs acc) || fail 10000 "ERROR!"
+           k sfuncs acc) | fail 10000 "ERROR!"]
         | ?F :: ?FS =>
           (** NOTE: you can not use the primitive 'unify' or anything based on it b/c
            ** it instantiates unification variables that should not be instantiated
@@ -173,6 +175,7 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
             | _ => 
               match eval hnf in F with
                 | @SEP.PSig _ _ ?F =>
+                  (*idtac "trying to match " F " with " f;*)
                   match F with
                     | f => k sfuncs acc 
                     | _ => 
@@ -204,8 +207,9 @@ Module ReifySepExpr (ST : SepTheory.SepTheory) (Import SEP : SepExpr ST).
    ** sexpr.
    **)
   Ltac reify_sexpr isConst s types funcs pcType stateType sfuncs uvars vars k :=
-    idtac "reify";
+    (*idtac "reify_sexpr " s;*)
     let rec reflect s funcs sfuncs uvars vars k :=
+      (*idtac "reify_sexpr_reflect " s;*)
       let v := ST.ex in
       match s with
         | fun _ => ?s =>
